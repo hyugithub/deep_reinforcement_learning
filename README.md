@@ -6,3 +6,17 @@ The purpose of this code base is to develop and test algorithms in RL and DL spa
 
 ## Open Questions
 
+Here we list some open questions in RL space to motivate our study:
+
+### Basic Reinforcement Learning Architecture
+The fundamental RL architecture includes the state, the action, the reward, and the environment (e.g., state transition). At the same time, like Warren Powell pointed out correctly, all the basic concepts are not perfectly defined.
+
+### Forecasting versus Optimization
+Supervised learning can be viewed as a prediction problem, with the goal to minimize generalized error on testing dataset. At the same time, Reinforcement Learning is not a prediction problem, but an optimization one. What are the pros and cons when incorporating SL in RL?
+
+### Performance of Stochastic Gradient Descent
+Many questions exist for SGD. 
+
+### How to unify multiple RL paradigms 
+Sutton Barto framework
+
