@@ -1,5 +1,9 @@
 # Bandit
 
+In bandit we solve one-step decision making problem. Arguably this is simpler than sequential decision making. But the scale and complexity in real-world bandit problem make things hard. We explore such complexity here.
+
+Even though bandit is not sequential decision making, it provides a benchmark for other algorithms.
+
 ## Key questions
 
 ### Scalability 
