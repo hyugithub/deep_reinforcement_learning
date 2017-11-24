@@ -9,5 +9,5 @@ initial_seed = 234
 
 number_actions = 5
 
-number_try = 10000
+number_try = 5000
 prob_exploration = 0.5
