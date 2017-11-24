@@ -8,9 +8,11 @@ Even though bandit is not sequential decision making, it provides a benchmark fo
 
 ### Scalability 
 Performance when number of actions increases
-Computational cost
-### Rare event 
 
+Computational cost
+
+### Rare event 
+In many real-world bandit problems, a binary reward happens rarely. For example, on websites users 
 ### Convergence of optimal control policy versus accurate forecasting
 
 ### Correlation
