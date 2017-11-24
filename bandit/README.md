@@ -12,7 +12,8 @@ Performance when number of actions increases
 Computational cost
 
 ### Rare event 
-In many real-world bandit problems, a binary reward happens rarely. For example, on websites users 
+In many real-world bandit problems, a binary reward happens rarely. For example, on certain websites only 1% of users click the recommended content. So the average reward is very low (0.01). Rare events present additional challenges for RL.
+
 ### Convergence of optimal control policy versus accurate forecasting
 
 ### Correlation
