@@ -1,72 +1,66 @@
-
-# coding: utf-8
-
-# In[55]:
-
-
 # configuration of actions
 import numpy as np
-np.random.seed(234)
+import config
 
-number_actions = 5
+# estimation class
+class Estimator:
+    def __init__(self, number_actions):
+        self.cnt_reward = np.full([number_actions],1)
+        self.cnt_trial = np.full([number_actions],1)
 
-#binary reward
-reward_mean = np.floor(np.random.uniform(size=[number_actions])*1000)*0.001
+    def update(self, reward):
+        self.cnt_reward[action]+= reward
+        self.cnt_trial[action] += 1        
+    
+    def get(self):
+        return self.cnt_reward/self.cnt_trial
 
-# let us also assume reward is bernoulli
-# so we need to estimate the probability
-
-cnt_reward = np.full([number_actions],1)
-cnt_trial = np.full([number_actions],1)
-
-
-
-# In[56]:
-
-
-class select_action:
+#policy class
+class Policy:
     def __init__(self, num_action, prob_explore):
         self.num_action = num_action
         self.prob_explore = prob_explore
     
-    def get_action(self, estimate_mean):
+    def get_action(self, reward_estimator):
         if np.random.uniform() >= self.prob_explore:
             #exploitation
-            return int(np.argmax(estimate_mean))
+            return int(np.argmax(reward_estimator.get()))
         # simple exploration
         return int(np.random.choice(self.num_action))
 
 
-# In[60]:
+# basic simulation configuration
+number_actions = config.number_actions
+number_try = config.number_try
+prob_exploration = config.prob_exploration
+np.random.seed(config.initial_seed)
 
+#binary reward
+reward_mean = np.floor(np.random.uniform(size=[number_actions])*1000)*0.001
+reward_est = Estimator(number_actions)
+policy = Policy(number_actions, prob_exploration)
 
-number_try = 10000
-prob_exploration = 0.5
-
-sel_action = select_action(number_actions, prob_exploration)
-
-selected = {}
+#book keeping
+action_frequency = {}
 
 for t in np.arange(number_try):
     # select an action    
-    action = sel_action.get_action(cnt_reward/cnt_trial)
+    action = policy.get_action(reward_est)
     #print(action)
     
-    if action in selected:
-        selected[action] += 1
+    if action in action_frequency:
+        action_frequency[action] += 1
     else:
-        selected[action] = 1
+        action_frequency[action] = 1
     
     # observe reward
     reward = (np.random.uniform() < reward_mean[action])
-    
-    cnt_reward[action]+= reward
-    cnt_trial[action] += 1
-    
-    # update estimate
-    
-final_estimate = cnt_reward/cnt_trial    
 
-for a in sorted(range(len(reward_mean)), key=lambda x: reward_mean[x]):
-    print(a,selected[a], reward_mean[a])
+    # update estimate    
+    reward_est.update(reward)    
+    
+final_estimate = reward_est.get()
+
+for a in sorted(range(len(reward_mean)), key=lambda x: reward_mean[x], reverse=True):
+    print(a,action_frequency[a], reward_mean[a])
 
