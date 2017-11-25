@@ -1,3 +1,5 @@
+#test git checkin capability
+
 # configuration of actions
 import numpy as np
 import config
