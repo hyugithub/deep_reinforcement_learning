@@ -5,6 +5,18 @@
 import numpy as np
 import config
 
+class Environment:
+    def __init__(self, number_actions):
+        self.reward_mean = np.floor(np.random.uniform(size=[number_actions])*1000)*0.001
+    
+    def get_reward(self, action):
+        if np.random.uniform() < self.reward_mean[action]:
+            return 1        
+        return 0
+    
+    def reward(self):
+        return self.reward_mean
+
 # estimation class
 class Estimator:
     snapshot_step2 = 100.0
@@ -15,6 +27,10 @@ class Estimator:
         self.count = 0
         self.snapshot = []
         self.steps = np.floor(np.exp(np.arange(int(np.log(100000)))))
+        self.max_time = dict.fromkeys(range(number_actions),0)
+
+    def optimal_action(self):        
+        return np.argmax(self.cnt_reward/self.cnt_trial)
 
     def update(self, reward):             
 #        if self.count % Estimator.snapshot_step2 == 0:        
@@ -24,6 +40,8 @@ class Estimator:
         self.count += 1
         self.cnt_reward[action]+= reward
         self.cnt_trial[action] += 1  
+        
+        self.max_time[self.optimal_action()] = self.count            
     
     def get(self):
         return self.cnt_reward/self.cnt_trial
@@ -31,18 +49,31 @@ class Estimator:
     def history(self):
         return self.snapshot
     
+    def optimal_since(self):
+        return max(self.max_time[a] for a in self.max_time if a != self.optimal_action())
+    
 #policy class
 class Policy:
     def __init__(self, num_action, prob_explore):
         self.num_action = num_action
         self.prob_explore = prob_explore
+        self.action_frequency = dict.fromkeys(range(num_action),0)
     
     def get_action(self, reward_estimator):
+        
+        # simple exploration
+        action = -1        
+        
         if np.random.uniform() >= self.prob_explore:
             #exploitation
-            return int(np.argmax(reward_estimator.get()))
-        # simple exploration
-        return int(np.random.choice(self.num_action))    
+            action = int(np.argmax(reward_estimator.get()))
+        else:
+            action = int(np.random.choice(self.num_action))
+        self.action_frequency[action] += 1
+        return action
+    
+    def get_action_frequency(self, action):
+        return self.action_frequency[action]
 
 # basic simulation configuration
 number_actions = config.number_actions
@@ -51,40 +82,36 @@ prob_exploration = config.prob_exploration
 np.random.seed(config.initial_seed)
 
 #binary reward
-reward_mean = np.floor(np.random.uniform(size=[number_actions])*1000)*0.001
+env = Environment(number_actions)
 reward_est = Estimator(number_actions)
 policy = Policy(number_actions, prob_exploration)
 
 #book keeping
-action_frequency = {}
-
 for t in np.arange(number_try):
     # select an action    
     action = policy.get_action(reward_est)
     #print(action)
     
-    if action in action_frequency:
-        action_frequency[action] += 1
-    else:
-        action_frequency[action] = 1
-    
     # observe reward
-    reward = (np.random.uniform() < reward_mean[action])
+    reward = env.get_reward(action)
 
     # update estimate    
     reward_est.update(reward)    
     
 final_estimate = reward_est.get()
 
-for a in sorted(range(len(reward_mean)), key=lambda x: reward_mean[x], reverse=True):
-    print(a,action_frequency[a], reward_mean[a])
+for a in sorted(range(len(env.reward())), key=lambda x: env.reward()[x], reverse=True):
+    print(a,policy.get_action_frequency(a), env.reward()[a])
 
 #for s in reward_est.history():
 #    print("step=%d action=%d reward estimate=%.3f"%s)
     
+print("optimal policy = %d"%reward_est.optimal_action())
+print("the policy is optimal since %d"%reward_est.optimal_since())
+    
 import matplotlib.pyplot as plt
 
-for a in range(len(reward_mean)):
+for a in range(number_actions):
     x = [s[0] for s in reward_est.history() if s[1] == a]
     y = [s[2] for s in reward_est.history() if s[1] == a]
     plt.plot(x, y, '-', label=str(a))
