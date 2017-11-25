@@ -112,8 +112,8 @@ print("the policy is optimal since %d"%reward_est.optimal_since())
 import matplotlib.pyplot as plt
 
 for a in range(number_actions):
-    x = [s[0] for s in reward_est.history() if s[1] == a]
-    y = [s[2] for s in reward_est.history() if s[1] == a]
+    x,y = zip(*[(s[0],s[2]) for s in reward_est.history() if s[1] == a])
+    #y = [s[2] for s in reward_est.history() if s[1] == a]
     plt.plot(x, y, '-', label=str(a))
 plt.legend(loc='best')
 plt.show()    
