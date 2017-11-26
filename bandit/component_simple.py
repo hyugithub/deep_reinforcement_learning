@@ -53,7 +53,7 @@ class Estimator:
         self.cnt_trial[action] += 1  
         
         if explore == False:
-            self.max_time[self.optimal_action()] = self.count            
+            self.max_time[action] = self.count            
     
     def get(self):
         return self.cnt_reward/self.cnt_trial
@@ -62,8 +62,8 @@ class Estimator:
         return self.snapshot
     
     def optimal_since(self):
-        return max(self.max_time[a] for a in self.max_time 
-                   if a != self.optimal_action())
+        return max([self.max_time[a] for a in self.max_time 
+                   if a != self.optimal_action()])
     
 #policy class
 class Policy:
