@@ -12,6 +12,7 @@ import numpy as np
 #import config
 import matplotlib.pyplot as plt
 import time
+import config
 
 class Environment:
     def __init__(self, number_actions):
@@ -31,8 +32,8 @@ class Estimator:
     snapshot_step2 = 100.0
     #initial_reward = 0.0
     def __init__(self, number_actions):
-        self.cnt_reward = np.full([number_actions],1)
-        self.cnt_trial = np.full([number_actions],1)
+        self.cnt_reward = np.full([number_actions],config.reward_bayesian_prior)
+        self.cnt_trial = np.full([number_actions],config.trial_bayesian_prior)
         self.count = 0
         self.snapshot = []
         self.steps = np.floor(np.exp(np.arange(int(np.log(100000)))))
