@@ -1,6 +1,7 @@
 #test new branch
 
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import time
 import component_simple as rl
@@ -8,6 +9,8 @@ import config
 from scipy.stats import norm
 
 ts = time.time()
+
+num_simulation = 10000
 
 #in verbose model, all debugging information is printed
 verbose = False
@@ -20,7 +23,7 @@ optimal_since = []
 error_prob = []
 
 #for run in range(config.num_simulation):
-for run in range(10000):
+for run in range(num_simulation):
     if verbose:
         print("\n starting run =", run)
     number_actions = config.number_actions
@@ -59,11 +62,17 @@ for run in range(10000):
     threshold = max(policy.get_learner().optimal_since(),1)
     reward_action_history = reward_action_history[0:threshold]
     
+    #Not sure if this is the
+    #assuming an action has a reward of 0.5 
+    
+    reward_prior = 0.5
+    trial_prior = 1.0
+    
     hist_opt = [r for a,r in reward_action_history if a == opt]
-    mean_opt = (config.reward_bayesian_prior+sum(hist_opt)) \
-               / (config.trial_bayesian_prior+len(hist_opt))
+    mean_opt = (reward_prior+sum(hist_opt)) \
+               / (trial_prior+len(hist_opt))
     var_opt = (1.0-mean_opt)*mean_opt \
-               /(config.trial_bayesian_prior+len(hist_opt))
+               /(trial_prior+len(hist_opt))
 
     if verbose:
         print("optimal action = %d"%opt)
@@ -77,10 +86,10 @@ for run in range(10000):
         if alt != opt:
             hist_alt = [r for a,r in reward_action_history if a == alt]
             # mean and variance derived from binomial distribution
-            mean_alt = (config.reward_bayesian_prior+sum(hist_alt)) \
-                       / (config.trial_bayesian_prior+len(hist_alt))
+            mean_alt = (reward_prior+sum(hist_alt)) \
+                       / (trial_prior+len(hist_alt))
             var_alt = (1.0-mean_alt)*mean_opt \
-                       /(config.trial_bayesian_prior+len(hist_alt))            
+                       /(trial_prior+len(hist_alt))            
                        
             # if by this time data is extremely sparse
             # essentially we don't have data to determine
@@ -127,11 +136,16 @@ print("policy converge mean = %d" % np.mean(optimal_since)
         , "std = %d" %np.std(optimal_since)
         , "median= %d" % np.median(optimal_since))
 print(np.percentile(optimal_since, np.arange(start=0,stop=100,step=10)))
+
+matplotlib.rcParams.update({'font.size': 22})
+plt.figure(1)
+plt.title("Time to Optimality: Empirical Distribution")
+plt.xlabel("Time Step")
+plt.ylabel("Frequency")
 plt.hist(optimal_since, bins='auto')
 plt.gca().set_xscale("log")
-plt.show()
-
 np.set_printoptions(precision=3, suppress=True)
+
 print("distribution of error probabiilty when optimal")
 print("mean = %.3f" % np.mean(error_prob)
          , "std = %.3f" % np.std(error_prob)
@@ -139,5 +153,11 @@ print("mean = %.3f" % np.mean(error_prob)
 
 print("percentile:")
 print(np.percentile(error_prob, np.arange(start=0,stop=100,step=10)))
+plt.figure(2)
+plt.title("Error Probability: Empirical Distribution")
+plt.xlabel("Time Step")
+plt.ylabel("Frequency")
+plt.hist(error_prob, bins='auto')
+plt.show()
 
 print("programming running time = %.3f"%(time.time()-ts))
