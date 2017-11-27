@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 26 11:10:59 2017
+#test new branch
 
-@author: HYU
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 import time
