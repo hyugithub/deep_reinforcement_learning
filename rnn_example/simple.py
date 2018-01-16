@@ -6,7 +6,9 @@ from __future__ import print_function, division
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import time
 
+ts = time.time()
 num_epochs = 20
 total_series_length = 50000
 
@@ -136,3 +138,4 @@ with tf.Session() as sess:
 plt.ioff()
 plt.show()    
 
+print("total program time = %.1f seconds" % (time.time()-ts))
