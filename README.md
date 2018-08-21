@@ -10,7 +10,10 @@ Here we list some open questions in RL space to motivate our study:
 
 ### Bellman Error Minimization
 
-### Practical Multi-Arm Bandit and Contextual Bandit
+### Practical Bandit
+Converence; delayed reward; reward mismatch; correlated bandit; strategy
+
+### Contextual Bandit
 
 ### Holistic state-space estimation and optimization
 
