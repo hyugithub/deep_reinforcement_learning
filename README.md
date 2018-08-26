@@ -10,6 +10,7 @@ Here we list some open questions in RL to motivate our study:
 
 ### Performance of Stochastic Gradient Descent and Bellman Error Minimization
 https://www.sigmetrics.org/sigmetrics2017/MI_Jordan_sigmetrics2017.pdf and other related papers
+
 reports-archive.adm.cs.cmu.edu/anon/anon/1999/CMU-CS-99-132.pdf
 
 ### Practical Bandit
