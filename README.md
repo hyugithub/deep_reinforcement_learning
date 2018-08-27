@@ -14,7 +14,7 @@ https://www.sigmetrics.org/sigmetrics2017/MI_Jordan_sigmetrics2017.pdf and other
 reports-archive.adm.cs.cmu.edu/anon/anon/1999/CMU-CS-99-132.pdf
 
 ### Practical Bandit
-Convergence; delayed reward; reward mismatch; correlated bandit; strategy
+Convergence of classical bandit; delayed reward; reward mismatch; correlated bandit; strategy; convergence of rank-based bandit
 
 ### Contextual Bandit
 Thompson sampling
